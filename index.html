@@ -82,7 +82,6 @@
         <div id="game-board"></div>
     </div>
     <script>
-        // الكود السري الجديد
         const SECRET_CODE = "151994"; 
 
         function checkCode() {
@@ -91,4 +90,49 @@
                 document.getElementById('lock-screen').style.display = 'none';
                 document.getElementById('main-game').style.display = 'flex';
                 initGame();
+            } else { 
+                document.getElementById('error-msg').innerText = "كود خاطئ!"; 
             }
+        }
+
+        const board = document.getElementById('game-board');
+        const msgDisplay = document.getElementById('msg');
+        const lvlDisplay = document.getElementById('lvl-num');
+        let currentRow = 0; 
+        const difficulty = [1, 1, 1, 1, 2, 2, 2, 3, 3, 4, 4, 4];
+
+        function initGame() {
+            board.innerHTML = ''; currentRow = 0; lvlDisplay.innerText = 1;
+            for (let i = 0; i < 12; i++) {
+                const rowDiv = document.createElement('div');
+                rowDiv.className = 'row' + (i === 0 ? ' active' : '');
+                rowDiv.id = `row-${i}`;
+                let wrongPositions = Array.from({length: 5}, (_, v) => v).sort(() => Math.random() - 0.5).slice(0, difficulty[i]);
+                for (let j = 0; j < 5; j++) {
+                    const brick = document.createElement('div');
+                    brick.className = 'brick';
+                    brick.onclick = () => {
+                        if (wrongPositions.includes(j)) {
+                            brick.classList.add('wrong'); brick.innerHTML = '✘';
+                            setTimeout(() => { alert('خسرت! حاول مرة تانية'); initGame(); }, 200);
+                        } else {
+                            brick.classList.add('correct'); brick.innerHTML = '💎';
+                            handleNextLevel();
+                        }
+                    };
+                    rowDiv.appendChild(brick);
+                }
+                board.appendChild(rowDiv);
+            }
+        }
+
+        function handleNextLevel() {
+            if (currentRow === 11) { msgDisplay.innerText = "🏆 مبروك! أنت بطل حقيقي!"; return; }
+            document.getElementById(`row-${currentRow}`).classList.remove('active');
+            currentRow++;
+            document.getElementById(`row-${currentRow}`).classList.add('active');
+            lvlDisplay.innerText = currentRow + 1;
+        }
+    </script>
+</body>
+</html>
