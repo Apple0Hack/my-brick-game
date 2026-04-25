@@ -35,6 +35,7 @@
         .login-box {
             background: #161b22; padding: 30px; border-radius: 15px;
             border: 1px solid var(--accent); text-align: center;
+            box-shadow: 0 0 20px rgba(88, 166, 255, 0.2);
         }
         input {
             padding: 12px; border-radius: 8px; border: 1px solid #30363d;
@@ -67,7 +68,7 @@
     <div id="lock-screen">
         <div class="login-box">
             <h2 style="color: var(--accent);">مطلوب كود الدخول</h2>
-            <input type="password" id="pass-input" placeholder="****">
+            <input type="password" id="pass-input" placeholder="ادخل الباسورد">
             <br>
             <button onclick="checkCode()">دخول</button>
             <p id="error-msg" style="color: #e74c3c; font-size: 0.8rem; margin-top: 10px;"></p>
@@ -81,53 +82,13 @@
         <div id="game-board"></div>
     </div>
     <script>
-        const SECRET_CODE = "1234"; // الكود السري هنا
+        // الكود السري الجديد
+        const SECRET_CODE = "151994"; 
+
         function checkCode() {
             const input = document.getElementById('pass-input').value;
             if (input === SECRET_CODE) {
                 document.getElementById('lock-screen').style.display = 'none';
                 document.getElementById('main-game').style.display = 'flex';
                 initGame();
-            } else { document.getElementById('error-msg').innerText = "كود خاطئ!"; }
-        }
-        const board = document.getElementById('game-board');
-        const msgDisplay = document.getElementById('msg');
-        const lvlDisplay = document.getElementById('lvl-num');
-        let currentRow = 0; 
-        const difficulty = [1, 1, 1, 1, 2, 2, 2, 3, 3, 4, 4, 4];
-        function initGame() {
-            board.innerHTML = ''; currentRow = 0; lvlDisplay.innerText = 1;
-            for (let i = 0; i < 12; i++) {
-                const rowDiv = document.createElement('div');
-                rowDiv.className = 'row' + (i === 0 ? ' active' : '');
-                rowDiv.id = `row-${i}`;
-                let wrongCount = difficulty[i];
-                let wrongPositions = Array.from({length: 5}, (_, v) => v).sort(() => Math.random() - 0.5).slice(0, wrongCount);
-                for (let j = 0; j < 5; j++) {
-                    const brick = document.createElement('div');
-                    brick.className = 'brick';
-                    brick.onclick = () => {
-                        if (wrongPositions.includes(j)) {
-                            brick.classList.add('wrong'); brick.innerHTML = '✘';
-                            msgDisplay.innerText = "خانة فاضية! جرب تانية.. ⚠️";
-                        } else {
-                            brick.classList.add('correct'); brick.innerHTML = '💎';
-                            handleNextLevel();
-                        }
-                    };
-                    rowDiv.appendChild(brick);
-                }
-                board.appendChild(rowDiv);
             }
-        }
-        function handleNextLevel() {
-            if (currentRow === 11) { msgDisplay.innerText = "🏆 أسطورة! ختمت اللعبة!"; return; }
-            document.getElementById(`row-${currentRow}`).classList.remove('active');
-            currentRow++;
-            document.getElementById(`row-${currentRow}`).classList.add('active');
-            lvlDisplay.innerText = currentRow + 1;
-            msgDisplay.innerText = "صح! كمل اللي بعده.. ✨";
-        }
-    </script>
-</body>
-</html>
