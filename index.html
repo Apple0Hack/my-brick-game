@@ -3,87 +3,130 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>مغامرة الـ 10 أدوار</title>
+    <title>تحدي التفاحة الذهبية 🍎</title>
     <style>
         :root {
-            --bg-color: #0b0e14;
-            --brick-main: #3a4452;
-            --brick-side: #252d38;
-            --accent: #58a6ff;
-            --error: #e74c3c;
-            --success: #2ecc71;
+            --bg-color: #0f1218;
+            --brick-grad: linear-gradient(145deg, #3a3f47, #1a1d22);
+            --brick-border: #4a4f58;
+            --accent-gold: #ffcc00;
+            --error-red: #e74c3c;
+            --win-green: #2ecc71;
         }
+        
         body {
             margin: 0; background-color: var(--bg-color); color: white;
-            font-family: sans-serif; display: flex; flex-direction: column; align-items: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex; flex-direction: column; align-items: center;
             height: 100vh; overflow: hidden;
         }
+
+        /* شاشة القفل */
         #lock-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--bg-color); display: flex; justify-content: center; align-items: center; z-index: 2000;
+            background: radial-gradient(circle, #1b2028 0%, #0b0e14 100%);
+            display: flex; justify-content: center; align-items: center; z-index: 2000;
         }
         .login-box {
-            background: #161b22; padding: 30px; border-radius: 15px;
-            border: 1px solid var(--accent); text-align: center;
+            background: #1c2128; padding: 40px; border-radius: 20px;
+            border: 2px solid var(--accent-gold); text-align: center;
+            box-shadow: 0 0 20px rgba(255, 204, 0, 0.2);
         }
-        input { padding: 12px; border-radius: 8px; border: 1px solid #30363d; background: #0d1117; color: white; width: 80%; margin: 15px 0; }
+        input { 
+            padding: 12px; border-radius: 10px; border: 1px solid #30363d; 
+            background: #0d1117; color: white; width: 100%; margin: 20px 0; 
+            text-align: center; font-size: 1.1rem;
+        }
         
         #main-game { display: none; width: 100%; flex-direction: column; align-items: center; height: 100%; }
-        .header { padding: 10px; text-align: center; background: rgba(22, 27, 34, 0.9); width: 100%; border-bottom: 1px solid #30363d; }
+
+        .header { 
+            padding: 20px; text-align: center; width: 100%; 
+            background: #161b22; border-bottom: 2px solid #30363d;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
         
+        /* لوحة اللعبة */
         #game-board {
-            display: flex; flex-direction: column-reverse; gap: 6px; padding: 10px;
-            width: 85vw; max-width: 350px; 
-            margin-top: 10px; /* سحب اللوحة لفوق */
+            display: flex; flex-direction: column-reverse; gap: 10px; padding: 15px;
+            width: 90vw; max-width: 400px; margin-top: 15px;
         }
-        .row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; opacity: 0.2; pointer-events: none; }
-        .row.active { opacity: 1; pointer-events: auto; transform: scale(1.02); }
-        
+
+        .row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; opacity: 0.3; pointer-events: none; }
+        .row.active { opacity: 1; pointer-events: auto; }
+
+        /* شكل الطوب الجديد (مثل الصناديق) */
         .brick {
-            height: 35px; background: var(--brick-main); border-radius: 6px;
+            height: 50px;
+            background: var(--brick-grad);
+            border: 1px solid var(--brick-border);
+            border-radius: 8px;
             display: flex; justify-content: center; align-items: center;
-            cursor: pointer; box-shadow: 0 4px 0 var(--brick-side); font-size: 1rem;
-        }
-        .brick.correct { background: var(--success) !important; box-shadow: 0 4px 0 #1e8449; }
-        .brick.wrong { background: var(--error) !important; box-shadow: 0 4px 0 #922b21; }
-        
-        /* تعديل مكان الزراير عشان تظهر فوق */
-        .controls { 
-            padding: 20px; 
-            display: flex; 
-            gap: 10px; 
-            width: 100%; 
-            justify-content: center;
-            background: var(--bg-color);
+            cursor: pointer;
             position: relative;
-            z-index: 100;
+            box-shadow: inset 0 1px 1px rgba(255,255,255,0.1), 0 5px 0 #000;
+            font-size: 1.6rem;
+            transition: all 0.1s ease;
         }
-        button { background: var(--accent); color: black; border: none; padding: 12px 15px; border-radius: 20px; font-weight: bold; cursor: pointer; font-size: 0.9rem; }
-        .btn-reset { background: #f39c12; }
+
+        .brick:active {
+            transform: translateY(3px);
+            box-shadow: inset 0 1px 1px rgba(255,255,255,0.1), 0 2px 0 #000;
+        }
+
+        /* حالة الفوز (تفاحة) */
+        .brick.correct {
+            background: linear-gradient(145deg, #f1c40f, #d4ac0d) !important;
+            border-color: #f7dc6f;
+            box-shadow: 0 0 15px rgba(241, 196, 15, 0.4);
+            animation: bounce 0.4s ease;
+        }
+
+        /* حالة الخسارة (قنبلة) */
+        .brick.wrong {
+            background: linear-gradient(145deg, #2c2c2c, #1a1a1a) !important;
+            border-color: #444;
+            opacity: 0.8;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        /* التحكم */
+        .controls { padding: 25px; display: flex; gap: 15px; width: 100%; justify-content: center; }
+        
+        button { 
+            background: var(--accent-gold); color: #000; border: none; 
+            padding: 14px 25px; border-radius: 12px; font-weight: bold; 
+            cursor: pointer; font-size: 1rem; box-shadow: 0 4px 0 #b38f00;
+        }
+        button:active { transform: translateY(2px); box-shadow: 0 2px 0 #b38f00; }
+        .btn-reset { background: #444; color: white; box-shadow: 0 4px 0 #222; }
     </style>
 </head>
 <body>
 
     <div id="lock-screen">
         <div class="login-box">
-            <h2 style="color: var(--accent);">كود الدخول</h2>
-            <input type="password" id="pass-input" placeholder="ادخل الباسورد">
-            <br>
-            <button onclick="checkCode()">دخول</button>
+            <h1 style="color: var(--accent-gold); margin-top: 0;">APPLE GAME 🍎</h1>
+            <input type="password" id="pass-input" placeholder="كلمة السر">
+            <button onclick="checkCode()" style="width: 100%;">دخول</button>
         </div>
     </div>
 
     <div id="main-game">
         <div class="header">
-            <div id="msg" style="color: var(--accent); font-weight: bold; margin-bottom: 5px;">خاليك 6 اختيارات بكتير 🎯</div>
-            <div style="font-size: 0.9rem;">المستوى: <span id="lvl-num">1</span> / 10</div>
+            <div id="msg" style="color: var(--accent-gold); font-size: 1.3rem; font-weight: bold;">اختر صندوقاً! 🍎</div>
+            <div style="color: #888; margin-top: 5px;">الدور: <span id="lvl-num" style="color: white;">1</span> / 10</div>
         </div>
 
         <div id="game-board"></div>
 
         <div class="controls">
-            <button class="btn-reset" onclick="resetCurrentLevel()">إعادة الدور 🔄</button>
-            <button onclick="initGame()">من جديد 🚩</button>
+            <button class="btn-reset" onclick="resetCurrentLevel()">تراجع 🔄</button>
+            <button onclick="initGame()">لعبة جديدة 🚩</button>
         </div>
     </div>
 
@@ -106,14 +149,18 @@
 
         function initGame() {
             board.innerHTML = ''; currentRow = 0; levelData = []; lvlDisplay.innerText = 1;
-            msgDisplay.innerText = "خاليك 6 اختيارات بكتير 🎯";
+            msgDisplay.innerText = "توقع مكان التفاحة! 🍎";
+            msgDisplay.style.color = "var(--accent-gold)";
+            
             for (let i = 0; i < 10; i++) {
                 const rowDiv = document.createElement('div');
                 rowDiv.className = 'row' + (i === 0 ? ' active' : '');
                 rowDiv.id = `row-${i}`;
+                
                 let indices = [0, 1, 2, 3, 4];
                 let wrongPos = indices.sort(() => Math.random() - 0.5).slice(0, difficulty[i]);
                 levelData.push(wrongPos);
+
                 for (let j = 0; j < 5; j++) {
                     const brick = document.createElement('div');
                     brick.className = 'brick';
@@ -128,11 +175,18 @@
         function handleBrickClick(r, c) {
             const brick = document.getElementById(`brick-${r}-${c}`);
             if (brick.classList.contains('correct') || brick.classList.contains('wrong')) return;
+
             if (levelData[r].includes(c)) {
-                brick.classList.add('wrong'); brick.innerHTML = '✘';
+                brick.classList.add('wrong'); 
+                brick.innerHTML = '💣'; 
+                msgDisplay.innerText = "قنبلة! جرب مرة أخرى 💣";
+                msgDisplay.style.color = "var(--error-red)";
             } else {
-                brick.classList.add('correct'); brick.innerHTML = '💎';
-                setTimeout(() => nextLevel(), 300);
+                brick.classList.add('correct'); 
+                brick.innerHTML = '🍎'; 
+                msgDisplay.innerText = "عظيم! أكمل الصعود 🍎";
+                msgDisplay.style.color = "var(--win-green)";
+                setTimeout(() => nextLevel(), 400);
             }
         }
 
@@ -143,13 +197,15 @@
                 document.getElementById(`row-${currentRow}`).classList.add('active');
                 lvlDisplay.innerText = currentRow + 1;
             } else {
-                msgDisplay.innerText = "🏆 مبروك! قفلت اللعبة!";
+                msgDisplay.innerText = "🏆 أسطورة! فزت بالتحدي!";
+                msgDisplay.style.color = "var(--accent-gold)";
             }
         }
 
         function resetCurrentLevel() {
             const bricks = document.querySelectorAll(`#row-${currentRow} .brick`);
             bricks.forEach(b => { b.classList.remove('wrong', 'correct'); b.innerHTML = ''; });
+            msgDisplay.innerText = "عدت للدور الحالي.. ركز! 🍎";
         }
     </script>
 </body>
