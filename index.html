@@ -2,91 +2,81 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>تحدي التفاحة 🍎</title>
     <style>
         :root {
             --bg-color: #0b0e14;
             --wood-light: #a0522d;
             --wood-dark: #5d2906;
-            --wood-border: #3d1c02;
             --accent-gold: #ffcc00;
-            --win-green: #2ecc71; /* اللون الأخضر للربح */
+            --win-green: #2ecc71;
         }
         
-        * { box-sizing: border-box; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
-            margin: 0; padding: 0; background-color: var(--bg-color); color: white;
-            font-family: sans-serif; display: flex; flex-direction: column; align-items: center;
-            height: 100vh; overflow: hidden; /* منع التمرير لضمان ظهور الأزرار */
+            background-color: var(--bg-color); color: white;
+            font-family: sans-serif; display: flex; flex-direction: column;
+            height: 100vh; width: 100vw; overflow: hidden;
         }
 
+        /* الهيدر */
+        .header { 
+            height: 45px; display: flex; align-items: center; justify-content: space-around;
+            background: #161b22; border-bottom: 1px solid #30363d; flex-shrink: 0;
+        }
+        
+        /* منطقة اللعبة القابلة للتمرير */
+        #game-container {
+            flex: 1; overflow-y: auto; display: flex; flex-direction: column;
+            align-items: center; padding: 10px 0;
+        }
+
+        #game-board {
+            display: flex; flex-direction: column-reverse; gap: 4px;
+            width: 90vw; max-width: 300px;
+        }
+
+        .row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; opacity: 0.15; pointer-events: none; }
+        .row.active { opacity: 1; pointer-events: auto; }
+
+        .brick {
+            height: 35px; background: linear-gradient(135deg, var(--wood-light), var(--wood-dark));
+            border: 1px solid #3d1c02; border-radius: 4px;
+            display: flex; justify-content: center; align-items: center;
+            cursor: pointer; box-shadow: inset 0 1px 1px rgba(255,255,255,0.2), 0 2px 0 #000;
+            font-size: 1rem;
+        }
+
+        .brick.correct { background: var(--win-green) !important; box-shadow: 0 0 10px var(--win-green); }
+        .brick.wrong { background: #222 !important; box-shadow: none; opacity: 0.7; }
+
+        /* منطقة الأزرار الثابتة تماماً في الأسفل */
+        .controls { 
+            height: 75px; display: flex; gap: 10px; width: 100%; 
+            justify-content: center; align-items: center; 
+            background: #161b22; border-top: 2px solid var(--accent-gold);
+            padding-bottom: 15px; flex-shrink: 0;
+        }
+        
+        button { 
+            background: var(--accent-gold); color: #000; border: none; 
+            padding: 12px 20px; border-radius: 10px; font-weight: bold; 
+            cursor: pointer; font-size: 0.9rem; min-width: 100px;
+        }
+        .btn-reset { background: #444; color: white; }
+
+        /* شاشة القفل */
         #lock-screen {
             position: fixed; inset: 0; background: var(--bg-color);
             display: flex; justify-content: center; align-items: center; z-index: 2000;
         }
         .login-box {
             background: #161b22; padding: 20px; border-radius: 15px;
-            border: 2px solid var(--accent-gold); text-align: center;
+            border: 2px solid var(--accent-gold); text-align: center; width: 85%;
         }
-        input { padding: 10px; border-radius: 8px; border: 1px solid #30363d; background: #0d1117; color: white; width: 80%; margin: 10px 0; text-align: center; }
-
-        #main-game { display: none; width: 100%; flex-direction: column; align-items: center; height: 100%; }
-
-        /* الهيدر خليه صغير عشان نوفر مساحة */
-        .header { 
-            padding: 8px; text-align: center; width: 100%; height: 60px;
-            background: #161b22; border-bottom: 1px solid #30363d;
-        }
-        
-        /* لوحة اللعبة - تصغيرها بشكل كبير لضمان ظهور الأزرار */
-        #game-board {
-            flex: 1; /* ياخد المساحة الباقية */
-            display: flex; flex-direction: column-reverse; 
-            gap: 2px; padding: 5px; /* تقليل المسافات */
-            width: 95vw; max-width: 320px; 
-            justify-content: center; /* يتوسط المساحة */
-        }
-
-        /* تصغير ارتفاع الصف */
-        .row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; opacity: 0.15; pointer-events: none; height: 30px; }
-        .row.active { opacity: 1; pointer-events: auto; }
-
-        /* الطوبة - جعلها مسطحة أكثر */
-        .brick {
-            height: 25px; /* تصغير الارتفاع من 35 إلى 25 */
-            background: linear-gradient(135deg, var(--wood-light), var(--wood-dark));
-            border: 1px solid var(--wood-border); border-radius: 4px;
-            display: flex; justify-content: center; align-items: center;
-            cursor: pointer; box-shadow: inset 0 1px 1px rgba(255,255,255,0.2), 0 2px 0 #000;
-            font-size: 0.9rem; position: relative;
-        }
-
-        .brick:active { transform: translateY(1px); box-shadow: 0 1px 0 #000; }
-
-        /* تغيير الخلفية الصفراء بالأخضر */
-        .brick.correct {
-            background: var(--win-green) !important; /* اللون الجديد */
-            box-shadow: 0 0 10px var(--win-green);
-        }
-
-        .brick.wrong { background: #222 !important; box-shadow: none; opacity: 0.7; }
-
-        /* منطقة التحكم - نرفعها لفوق شوية عشان شريط المتصفح */
-        .controls { 
-            height: 70px; display: flex; gap: 10px; width: 100%; 
-            justify-content: center; align-items: center; 
-            background: #161b22; border-top: 1px solid #30363d;
-            padding-bottom: 5px; /* مسافة بسيطة من الأسفل */
-        }
-        
-        button { 
-            background: var(--accent-gold); color: #000; border: none; 
-            padding: 8px 15px; border-radius: 8px; font-weight: bold; 
-            cursor: pointer; font-size: 0.85rem;
-        }
-        .btn-reset { background: #444; color: white; }
+        input { padding: 12px; margin: 10px 0; width: 100%; text-align: center; border-radius: 8px; border: 1px solid #333; background: #000; color: #fff; }
     </style>
 </head>
 <body>
@@ -94,18 +84,20 @@
     <div id="lock-screen">
         <div class="login-box">
             <h2 style="color: var(--accent-gold);">APPLE GAME 🍎</h2>
-            <input type="password" id="pass-input" placeholder="كلمة السر">
+            <input type="password" id="pass-input" placeholder="باسورد الدخول">
             <button onclick="checkCode()" style="width: 100%;">دخول</button>
         </div>
     </div>
 
-    <div id="main-game">
+    <div id="main-game" style="display:none; flex-direction: column; height: 100%;">
         <div class="header">
-            <div id="msg" style="color: var(--accent-gold); font-weight: bold; font-size: 0.95rem;">توقع مكان التفاحة! 🍎</div>
-            <div style="font-size: 0.7rem; color: #888;">المستوى: <span id="lvl-num" style="color: white;">1</span> / 10</div>
+            <div id="msg" style="color: var(--accent-gold); font-weight: bold; font-size: 0.8rem;">توقع مكان التفاحة! 🍎</div>
+            <div style="font-size: 0.7rem; color: #888;">المستوى: <span id="lvl-num" style="color: white;">1</span></div>
         </div>
 
-        <div id="game-board"></div>
+        <div id="game-container">
+            <div id="game-board"></div>
+        </div>
 
         <div class="controls">
             <button class="btn-reset" onclick="resetCurrentLevel()">تراجع 🔄</button>
@@ -149,6 +141,8 @@
                 }
                 board.appendChild(rowDiv);
             }
+            // سكرول لآخر اللوحة (البداية من تحت)
+            document.getElementById('game-container').scrollTop = board.scrollHeight;
         }
 
         function handleBrickClick(r, c) {
@@ -168,6 +162,8 @@
                 currentRow++;
                 document.getElementById(`row-${currentRow}`).classList.add('active');
                 lvlDisplay.innerText = currentRow + 1;
+                // سكرول بسيط ليفوق لمتابعة الدور
+                document.getElementById('game-container').scrollBy({ top: -40, behavior: 'smooth' });
             } else {
                 msgDisplay.innerText = "🏆 فوز أسطوري!";
             }
