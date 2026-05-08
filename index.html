@@ -3,69 +3,101 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>تحدي التفاحة 🍎</title>
+    <title>تحدي التفاحة الملكي 🍎</title>
     <style>
         :root {
             --bg-color: #0b0e14;
-            --wood-light: #a0522d;
-            --wood-dark: #5d2906;
             --accent-gold: #ffcc00;
+            --neon-blue: #00f3ff;
             --win-green: #2ecc71;
+            --3d-shadow: #b38f00;
         }
         
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
             background-color: var(--bg-color); color: white;
-            font-family: sans-serif; display: flex; flex-direction: column;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex; flex-direction: column;
             height: 100vh; width: 100vw; overflow: hidden;
         }
 
-        /* الهيدر */
+        /* شريط النيون العلوي */
+        .neon-bar {
+            height: 4px;
+            width: 100%;
+            background: linear-gradient(90deg, transparent, var(--neon-blue), var(--accent-gold), var(--neon-blue), transparent);
+            background-size: 200% 100%;
+            animation: moveNeon 3s linear infinite;
+            box-shadow: 0 0 15px var(--neon-blue);
+        }
+
+        @keyframes moveNeon {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
         .header { 
-            height: 45px; display: flex; align-items: center; justify-content: space-around;
+            height: 60px; display: flex; flex-direction: column; align-items: center; justify-content: center;
             background: #161b22; border-bottom: 1px solid #30363d; flex-shrink: 0;
         }
         
-        /* منطقة اللعبة القابلة للتمرير */
+        .sub-header { font-size: 0.7rem; color: var(--accent-gold); letter-spacing: 1px; margin-top: 2px; }
+
         #game-container {
             flex: 1; overflow-y: auto; display: flex; flex-direction: column;
-            align-items: center; padding: 10px 0;
+            align-items: center; padding: 20px 0;
+            background: radial-gradient(circle at center, #1a1f29 0%, #0b0e14 100%);
         }
 
         #game-board {
-            display: flex; flex-direction: column-reverse; gap: 4px;
-            width: 90vw; max-width: 300px;
+            display: flex; flex-direction: column-reverse; gap: 8px;
+            width: 90vw; max-width: 320px;
         }
 
-        .row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; opacity: 0.15; pointer-events: none; }
-        .row.active { opacity: 1; pointer-events: auto; }
+        .row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; opacity: 0.2; pointer-events: none; transition: 0.3s; }
+        .row.active { opacity: 1; pointer-events: auto; transform: scale(1.02); }
 
         .brick {
-            height: 35px; background: linear-gradient(135deg, var(--wood-light), var(--wood-dark));
-            border: 1px solid #3d1c02; border-radius: 4px;
-            display: flex; justify-content: center; align-items: center;
-            cursor: pointer; box-shadow: inset 0 1px 1px rgba(255,255,255,0.2), 0 2px 0 #000;
-            font-size: 1rem;
+            height: 45px; background: #2a2f3a;
+            border-radius: 8px; display: flex; justify-content: center; align-items: center;
+            cursor: pointer; border: 1px solid #3d444d;
+            box-shadow: 0 4px 0 #000; transition: all 0.1s;
+            font-size: 1.2rem;
         }
 
-        .brick.correct { background: var(--win-green) !important; box-shadow: 0 0 10px var(--win-green); }
-        .brick.wrong { background: #222 !important; box-shadow: none; opacity: 0.7; }
+        .brick:active { transform: translateY(2px); box-shadow: 0 2px 0 #000; }
+        .brick.correct { background: var(--win-green) !important; box-shadow: 0 4px 0 #1b7a43; animation: pulse 0.5s; }
+        .brick.wrong { background: #e74c3c !important; box-shadow: 0 4px 0 #822a22; }
 
-        /* منطقة الأزرار الثابتة تماماً في الأسفل */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        /* منطقة الأزرار الـ 3D المعدلة */
         .controls { 
-            height: 75px; display: flex; gap: 10px; width: 100%; 
+            height: 100px; display: flex; gap: 20px; width: 100%; 
             justify-content: center; align-items: center; 
-            background: #161b22; border-top: 2px solid var(--accent-gold);
-            padding-bottom: 15px; flex-shrink: 0;
+            background: #161b22; border-top: 1px solid #30363d;
+            padding-bottom: 20px; flex-shrink: 0;
         }
         
-        button { 
-            background: var(--accent-gold); color: #000; border: none; 
-            padding: 12px 20px; border-radius: 10px; font-weight: bold; 
-            cursor: pointer; font-size: 0.9rem; min-width: 100px;
+        .btn-3d {
+            position: relative; padding: 12px 25px; font-size: 1rem; font-weight: bold;
+            color: black; background: var(--accent-gold); border: none; border-radius: 12px;
+            box-shadow: 0 6px 0 var(--3d-shadow); cursor: pointer; transition: 0.1s;
+            min-width: 120px; outline: none;
         }
-        .btn-reset { background: #444; color: white; }
+
+        .btn-3d:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 var(--3d-shadow);
+        }
+
+        .btn-reset { background: #555; color: white; box-shadow: 0 6px 0 #333; }
+        .btn-reset:active { box-shadow: 0 2px 0 #333; }
 
         /* شاشة القفل */
         #lock-screen {
@@ -73,26 +105,29 @@
             display: flex; justify-content: center; align-items: center; z-index: 2000;
         }
         .login-box {
-            background: #161b22; padding: 20px; border-radius: 15px;
-            border: 2px solid var(--accent-gold); text-align: center; width: 85%;
+            background: #161b22; padding: 30px; border-radius: 20px;
+            border: 1px solid var(--accent-gold); text-align: center; width: 85%;
+            box-shadow: 0 0 20px rgba(255, 204, 0, 0.2);
         }
-        input { padding: 12px; margin: 10px 0; width: 100%; text-align: center; border-radius: 8px; border: 1px solid #333; background: #000; color: #fff; }
+        input { padding: 15px; margin: 15px 0; width: 100%; text-align: center; border-radius: 10px; border: 1px solid #333; background: #000; color: #fff; font-size: 1.1rem; }
     </style>
 </head>
 <body>
 
     <div id="lock-screen">
         <div class="login-box">
-            <h2 style="color: var(--accent-gold);">APPLE GAME 🍎</h2>
-            <input type="password" id="pass-input" placeholder="باسورد الدخول">
-            <button onclick="checkCode()" style="width: 100%;">دخول</button>
+            <h2 style="color: var(--accent-gold); margin-bottom: 10px;">APPLE CHALLENGE 🍎</h2>
+            <p style="color: #888; font-size: 0.8rem;">أدخل شفرة العبور</p>
+            <input type="password" id="pass-input" placeholder="••••••">
+            <button class="btn-3d" onclick="checkCode()" style="width: 100%;">دخول للمصنع</button>
         </div>
     </div>
 
     <div id="main-game" style="display:none; flex-direction: column; height: 100%;">
+        <div class="neon-bar"></div>
         <div class="header">
-            <div id="msg" style="color: var(--accent-gold); font-weight: bold; font-size: 0.8rem;">توقع مكان التفاحة! 🍎</div>
-            <div style="font-size: 0.7rem; color: #888;">المستوى: <span id="lvl-num" style="color: white;">1</span></div>
+            <div id="msg" style="color: white; font-weight: bold;">6 تفاحات.. ويستحسن 4 🍎</div>
+            <div class="sub-header">المستوى الحالي: <span id="lvl-num">1</span></div>
         </div>
 
         <div id="game-container">
@@ -100,16 +135,21 @@
         </div>
 
         <div class="controls">
-            <button class="btn-reset" onclick="resetCurrentLevel()">تراجع 🔄</button>
-            <button onclick="initGame()">جديد 🚩</button>
+            <button class="btn-3d btn-reset" onclick="resetCurrentLevel()">تراجع 🔄</button>
+            <button class="btn-3d" onclick="initGame()">جولة جديدة 🚩</button>
         </div>
     </div>
+
+    <audio id="bg-music" loop>
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3" type="audio/mpeg">
+    </audio>
 
     <script>
         const SECRET_CODE = "102075";
         const board = document.getElementById('game-board');
         const lvlDisplay = document.getElementById('lvl-num');
         const msgDisplay = document.getElementById('msg');
+        const music = document.getElementById('bg-music');
         let currentRow = 0;
         const difficulty = [1, 1, 1, 1, 2, 2, 2, 3, 3, 4];
         let levelData = [];
@@ -118,13 +158,17 @@
             if (document.getElementById('pass-input').value === SECRET_CODE) {
                 document.getElementById('lock-screen').style.display = 'none';
                 document.getElementById('main-game').style.display = 'flex';
+                music.volume = 0.3;
+                music.play().catch(() => console.log("المتصفح منع التشغيل التلقائي"));
                 initGame();
+            } else {
+                alert("الباسورد خطأ يا بطل!");
             }
         }
 
         function initGame() {
             board.innerHTML = ''; currentRow = 0; levelData = []; lvlDisplay.innerText = 1;
-            msgDisplay.innerText = "توقع مكان التفاحة! 🍎";
+            msgDisplay.innerText = "6 تفاحات.. ويستحسن 4 🍎";
             for (let i = 0; i < 10; i++) {
                 const rowDiv = document.createElement('div');
                 rowDiv.className = 'row' + (i === 0 ? ' active' : '');
@@ -141,15 +185,17 @@
                 }
                 board.appendChild(rowDiv);
             }
-            // سكرول لآخر اللوحة (البداية من تحت)
             document.getElementById('game-container').scrollTop = board.scrollHeight;
         }
 
         function handleBrickClick(r, c) {
             const brick = document.getElementById(`brick-${r}-${c}`);
             if (brick.classList.contains('correct') || brick.classList.contains('wrong')) return;
+            
             if (levelData[r].includes(c)) {
                 brick.classList.add('wrong'); brick.innerHTML = '💣';
+                msgDisplay.innerText = "انفجرت! حاول تاني 💥";
+                setTimeout(() => initGame(), 1000);
             } else {
                 brick.classList.add('correct'); brick.innerHTML = '🍎';
                 setTimeout(() => nextLevel(), 300);
@@ -162,16 +208,22 @@
                 currentRow++;
                 document.getElementById(`row-${currentRow}`).classList.add('active');
                 lvlDisplay.innerText = currentRow + 1;
-                // سكرول بسيط ليفوق لمتابعة الدور
-                document.getElementById('game-container').scrollBy({ top: -40, behavior: 'smooth' });
+                document.getElementById('game-container').scrollBy({ top: -60, behavior: 'smooth' });
             } else {
-                msgDisplay.innerText = "🏆 فوز أسطوري!";
+                msgDisplay.innerText = "🏆 فوز ملكي أسطوري!";
+                confettiEffect();
             }
         }
 
         function resetCurrentLevel() {
             const bricks = document.querySelectorAll(`#row-${currentRow} .brick`);
             bricks.forEach(b => { b.classList.remove('wrong', 'correct'); b.innerHTML = ''; });
+        }
+
+        // تأثير بسيط عند الفوز
+        function confettiEffect() {
+            board.style.boxShadow = "0 0 50px var(--win-green)";
+            setTimeout(() => board.style.boxShadow = "none", 2000);
         }
     </script>
 </body>
