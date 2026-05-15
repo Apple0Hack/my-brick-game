@@ -113,10 +113,42 @@
 
     <script>
         const MASTER_PASS = "102075";
-        const ALLOWED_ID = "1658237633"; // الـ ID الجديد
+        const ALLOWED_ID = "1658237633";
         let attempts = 3;
         let currentRow = 0;
         let levelData = [];
+
+        function verifyPass() {
+            // إضافة .toString() لضمان مطابقة النص الصافي
+            const inputVal = document.getElementById('pass-input').value.trim();
+            if (inputVal === MASTER_PASS.toString()) {
+                document.getElementById('pass-screen').style.display = 'none';
+                document.getElementById('id-screen').style.display = 'flex';
+            } else { 
+                alert("❌ كلمة المرور غير صحيحة"); 
+                document.getElementById('pass-input').value = ""; // مسح الخانة للمحاولة مرة تانية
+            }
+        }
+
+        function verifyID() {
+            const inputVal = document.getElementById('id-input').value.trim();
+            if (inputVal === ALLOWED_ID.toString()) {
+                document.getElementById('id-screen').style.display = 'none';
+                document.getElementById('loading-screen').style.display = 'flex';
+                
+                setTimeout(() => { document.getElementById('load-text').innerText = "جاري فحص الصلاحية..."; }, 1500);
+                
+                setTimeout(() => {
+                    document.getElementById('loading-screen').style.display = 'none';
+                    document.getElementById('main-game').style.display = 'flex';
+                    attempts = manageAttempts();
+                    document.getElementById('attempts-val').innerText = attempts;
+                }, 4000);
+            } else { 
+                alert("⚠️ الـ ID خطأ!"); 
+                document.getElementById('id-input').value = "";
+            }
+        }
 
         function manageAttempts() {
             const saved = JSON.parse(localStorage.getItem('apple_v4')) || null;
@@ -127,28 +159,53 @@
             return 3;
         }
 
-        function verifyPass() {
-            const val = document.getElementById('pass-input').value.trim();
-            if (val === MASTER_PASS) {
-                document.getElementById('pass-screen').style.display = 'none';
-                document.getElementById('id-screen').style.display = 'flex';
-            } else { alert("❌ الباسورد خطأ!"); }
-        }
-
-        function verifyID() {
-            const val = document.getElementById('id-input').value.trim();
-            if (val === ALLOWED_ID) {
-                document.getElementById('id-screen').style.display = 'none';
-                document.getElementById('loading-screen').style.display = 'flex';
-                setTimeout(() => { document.getElementById('load-text').innerText = "جاري فحص الصلاحية..."; }, 1500);
-                setTimeout(() => {
-                    document.getElementById('loading-screen').style.display = 'none';
-                    document.getElementById('main-game').style.display = 'flex';
-                    attempts = manageAttempts();
-                    document.getElementById('attempts-val').innerText = attempts;
-                }, 4000);
-            } else { alert("⚠️ الـ ID خطأ!"); }
-        }
-
         function initGame() {
-            if (attempts <= 0)
+            if (attempts <= 0) return alert("انتهت محاولاتك للأسبوع!");
+            attempts--;
+            const saved = JSON.parse(localStorage.getItem('apple_v4'));
+            saved.attempts = attempts;
+            localStorage.setItem('apple_v4', JSON.stringify(saved));
+            document.getElementById('attempts-val').innerText = attempts;
+
+            const board = document.getElementById('game-board');
+            board.innerHTML = ''; currentRow = 0; levelData = [];
+            for (let i = 0; i < 10; i++) {
+                const row = document.createElement('div');
+                row.className = 'row' + (i === 0 ? ' active' : '');
+                row.id = `row-${i}`;
+                let bCount = (i < 4) ? 1 : (i < 7) ? 2 : 3;
+                let bombs = [0,1,2,3,4].sort(() => Math.random() - 0.5).slice(0, bCount);
+                levelData.push(bombs);
+                for (let j = 0; j < 5; j++) {
+                    const b = document.createElement('div');
+                    b.className = 'brick';
+                    b.onclick = () => {
+                        if (i !== currentRow) return;
+                        if (bombs.includes(j)) { 
+                            b.classList.add('wrong'); b.innerHTML = '💣'; 
+                            document.getElementById('msg').innerText = "💣 انفجار! حاول تتركز";
+                        }
+                        else {
+                            b.classList.add('correct'); b.innerHTML = '🍎';
+                            setTimeout(() => {
+                                if (currentRow < 9) {
+                                    document.getElementById(`row-${currentRow}`).classList.remove('active');
+                                    currentRow++;
+                                    document.getElementById(`row-${currentRow}`).classList.add('active');
+                                    document.getElementById('game-container').scrollBy({top: -60, behavior: 'smooth'});
+                                } else { alert("👑 فوز أسطوري!"); }
+                            }, 300);
+                        }
+                    };
+                    row.appendChild(b);
+                }
+                board.appendChild(row);
+            }
+        }
+
+        function resetRow() {
+            document.querySelectorAll(`#row-${currentRow} .brick`).forEach(b => { b.classList.remove('wrong', 'correct'); b.innerHTML = ''; });
+        }
+    </script>
+</body>
+</html>
