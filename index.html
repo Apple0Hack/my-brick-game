@@ -81,7 +81,7 @@
     <script>
         const P1 = "102075";
         // قائمة الـ IDs المعتمدة
-        const P2 = ["1658237633", "1685403065", "1685370793"];
+        const P2 = ["1658237633", "1685403065", "1685370793", "1685373237"];
         let atts = 3;
         let curRow = 0;
         let map = [];
@@ -100,7 +100,6 @@
 
         function checkID() {
             let v = fixNum(document.getElementById('id-input').value);
-            // التحقق من وجود الـ ID في المصفوفة
             if (P2.includes(v)) {
                 document.getElementById('id-screen').style.display = 'none';
                 document.getElementById('loading-screen').style.display = 'flex';
