@@ -80,12 +80,12 @@
 
     <script>
         const P1 = "102075";
-        const P2 = "1658237633";
+        // قائمة الـ IDs المعتمدة
+        const P2 = ["1658237633", "1685403065", "1685370793"];
         let atts = 3;
         let curRow = 0;
         let map = [];
 
-        // تحويل الأرقام العربية لإنجليزية لضمان المطابقة
         function fixNum(s) {
             return s.replace(/[٠-٩]/g, d => "٠١٢٣٤٥٦٧٨٩".indexOf(d)).trim();
         }
@@ -100,7 +100,8 @@
 
         function checkID() {
             let v = fixNum(document.getElementById('id-input').value);
-            if (v === P2) {
+            // التحقق من وجود الـ ID في المصفوفة
+            if (P2.includes(v)) {
                 document.getElementById('id-screen').style.display = 'none';
                 document.getElementById('loading-screen').style.display = 'flex';
                 setTimeout(() => { document.getElementById('load-status').innerText = "جاري التحقق من الصلاحية..."; }, 1500);
