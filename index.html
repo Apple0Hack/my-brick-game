@@ -1,167 +1,238 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>APPLE HACK VIP 🍎</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GEMS MINES VIP - ULTIMATE</title>
     <style>
-        :root {
-            --bg-color: #0b0e14;
-            --accent-gold: #ffcc00;
-            --3d-gold: #b38f00;
-            --neon-blue: #00f3ff;
+        :root { 
+            --gold: #ffd700; 
+            --blue: #00d4ff; 
+            --neon: 0 0 15px rgba(255, 215, 0, 0.7); 
             --win-green: #2ecc71;
-            --bomb-red: #e74c3c;
         }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { background-color: var(--bg-color); color: white; font-family: sans-serif; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
-
-        .overlay { position: fixed; inset: 0; background: var(--bg-color); display: flex; justify-content: center; align-items: center; z-index: 2000; }
-        .login-box { background: #161b22; padding: 35px 25px; border-radius: 25px; border: 2px solid var(--accent-gold); text-align: center; width: 90%; max-width: 350px; }
+        * { box-sizing: border-box; direction: ltr !important; } 
+        body { margin: 0; font-family: 'Segoe UI', sans-serif; background: #000; color: white; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; }
         
-        .input-group { position: relative; width: 100%; margin: 15px 0; }
-        input { width: 100%; padding: 15px; border-radius: 12px; border: 1px solid #444; background: #000; color: var(--accent-gold); font-size: 1.2rem; text-align: center; outline: none; }
+        .status-bar { position: absolute; top: 0; width: 100%; background: rgba(0, 212, 255, 0.1); border-bottom: 1px solid var(--blue); padding: 5px 0; overflow: hidden; white-space: nowrap; z-index: 10; }
+        .status-text { display: inline-block; animation: scrollText 15s linear infinite; color: var(--blue); font-size: 11px; font-weight: bold; }
+        @keyframes scrollText { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
         
-        .btn-3d { padding: 15px; width: 100%; border-radius: 15px; border: none; background: linear-gradient(180deg, #ffcc00, #b38f00); color: #000; font-weight: 900; cursor: pointer; box-shadow: 0 5px 0 #665200; transition: 0.1s; }
-        .btn-3d:active { transform: translateY(3px); box-shadow: 0 2px 0 #665200; }
+        .container { background: rgba(0, 10, 25, 0.98); border: 2px solid var(--gold); padding: 35px 25px; border-radius: 30px; text-align: center; width: 340px; box-shadow: var(--neon); position: relative; backdrop-filter: blur(10px); }
+        .neon-line { position: absolute; top: -2px; left: 50%; transform: translateX(-50%); width: 120px; height: 4px; background: var(--gold); box-shadow: 0 0 15px var(--gold); border-radius: 10px; }
+        .title { font-size: 24px; color: var(--gold); margin-bottom: 25px; font-weight: 900; text-shadow: 0 0 15px var(--gold); }
+        
+        .btn-3d { width: 100%; padding: 15px; margin: 8px 0; border: none; border-radius: 15px; cursor: pointer; font-weight: bold; font-size: 16px; transition: 0.2s; }
+        .btn-gold { background: linear-gradient(145deg, #ffd700, #b8860b); color: #000; box-shadow: 0 5px 0 #8a6d00; }
+        .btn-gold:active { transform: translateY(3px); box-shadow: 0 2px 0 #8a6d00; }
+        .btn-blue { background: transparent; color: var(--blue); border: 1px solid var(--blue); box-shadow: 0 0 10px rgba(0, 212, 255, 0.3); }
+        .btn-blue:active { transform: scale(0.98); }
+        
+        input { width: 100%; padding: 15px; margin-bottom: 12px; border-radius: 12px; border: 1px solid #1a3a5a; background: #000; color: var(--blue); text-align: center; font-size: 18px; outline: none; }
+        .grid { display: grid; grid-template-columns: repeat(5, 52px); gap: 8px; justify-content: center; margin-top: 15px; padding: 10px; background: rgba(0,0,0,0.5); border-radius: 15px; }
+        .cell { width: 52px; height: 52px; background: #0a1a2a; border: 1px solid #1a3a5a; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 22px; cursor: pointer; transition: 0.3s; }
+        
+        .loader-box { background: #000000 !important; border: 2px solid var(--blue) !important; box-shadow: 0 0 20px rgba(0, 212, 255, 0.5) !important; }
+        .spin-circle { width: 55px; height: 55px; border: 5px solid #111; border-top: 5px solid var(--blue); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 20px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        .progress-bar { width: 100%; height: 4px; background: #111; border-radius: 2px; margin-top: 15px; position: relative; overflow: hidden; }
+        .progress-line { position: absolute; height: 100%; width: 40%; background: var(--blue); animation: loadMove 2s infinite linear; }
+        @keyframes loadMove { from { left: -40%; } to { left: 100%; } }
 
-        .loader { width: 50px; height: 50px; border: 5px solid #222; border-top: 5px solid var(--accent-gold); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 15px; }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
-
-        .header { height: 80px; background: #161b22; display: flex; flex-direction: column; align-items: center; justify-content: center; border-bottom: 1px solid #333; }
-        #game-board { display: flex; flex-direction: column-reverse; gap: 8px; width: 95%; max-width: 320px; margin: 15px auto; }
-        .row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; opacity: 0.2; pointer-events: none; }
-        .row.active { opacity: 1; pointer-events: auto; }
-        .brick { height: 45px; background: #2a2f3a; border-radius: 8px; border: 1px solid #444; display: flex; justify-content: center; align-items: center; font-size: 1.2rem; }
-        .brick.correct { background: var(--win-green) !important; }
-        .brick.wrong { background: var(--bomb-red) !important; }
-        .controls { padding: 20px; background: #161b22; display: flex; gap: 10px; }
+        .hidden { display: none !important; }
+        #music-ctrl { position: absolute; bottom: 20px; right: 20px; background: none; border: 1px solid var(--gold); color: var(--gold); border-radius: 50%; width: 40px; height: 40px; cursor: pointer; z-index: 20; }
     </style>
 </head>
 <body>
 
-    <div id="pass-screen" class="overlay">
-        <div class="login-box">
-            <h2 style="color:var(--accent-gold)">CORE ACCESS 🔐</h2>
-            <div class="input-group">
-                <input type="text" id="pass-input" placeholder="كلمة المرور">
-            </div>
-            <button class="btn-3d" onclick="checkPass()">دخول</button>
-        </div>
+    <audio id="bg-music" loop><source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3" type="audio/mpeg"></audio>
+    <audio id="click-sound"><source src="https://www.myinstants.com/media/sounds/button-3.mp3" type="audio/mpeg"></audio>
+
+    <button id="music-ctrl" onclick="toggleMusic()">🔊</button>
+
+    <div class="status-bar">
+        <div class="status-text">SYSTEM ONLINE... SCANNING GRID V3... NEXT ROUND READY... AI-MINES ACTIVE...</div>
     </div>
 
-    <div id="id-screen" class="overlay" style="display:none">
-        <div class="login-box" style="border-color: var(--neon-blue)">
-            <h2 style="color:var(--neon-blue)">ID LOGIN 🆔</h2>
-            <div class="input-group">
-                <input type="text" id="id-input" placeholder="أدخل الـ ID">
-            </div>
-            <button class="btn-3d" style="background:var(--neon-blue); box-shadow:0 5px 0 #006b7a" onclick="checkID()">تنشيط</button>
-        </div>
+    <div id="screen-pass" class="container">
+        <div class="neon-line"></div>
+        <div class="title">SECURE LOGIN</div>
+        <input type="password" id="mainKey" placeholder="PASSWORD">
+        <button class="btn-3d btn-gold" onclick="login()">UNLOCK</button>
     </div>
 
-    <div id="loading-screen" class="overlay" style="display:none">
-        <div class="login-box" style="background:#000">
-            <div class="loader"></div>
-            <p id="load-status">جاري الاتصال بالسيرفر...</p>
-        </div>
+    <div id="screen-choice" class="container hidden">
+        <div class="neon-line"></div>
+        <div class="title">LEVEL</div>
+        <button class="btn-3d btn-gold" onclick="playClick(); showID()">FREE TRIAL</button>
+        <button class="btn-3d btn-blue" style="border-color: #f00; color: #f00;" onclick="playClick(); vipAccess()">VIP PRO</button>
     </div>
 
-    <div id="main-game" style="display:none; flex-direction:column; height:100%">
-        <div class="header">
-            <div style="color:var(--accent-gold); font-weight:bold">المحاولات: <span id="att-count">3</span></div>
+    <div id="screen-id" class="container hidden">
+        <div class="neon-line"></div>
+        <div class="title">VERIFY ID</div>
+        <input type="text" id="pID" placeholder="PLAYER ID">
+        <button class="btn-3d btn-gold" onclick="playClick(); checkID()">CONNECT</button>
+    </div>
+
+    <div id="screen-loading" class="container loader-box hidden">
+        <div class="spin-circle"></div>
+        <div id="load-text" style="font-family: monospace; font-size: 16px; color: #fff; font-weight: bold; letter-spacing: 1px;">يتم الاتصال بخادمك...</div>
+        <div class="progress-bar"><div class="progress-line"></div></div>
+    </div>
+
+    <div id="screen-game" class="container hidden">
+        <div class="neon-line"></div>
+        <div class="title" id="game-title">RADAR</div>
+        <div class="grid" id="gameGrid"></div>
+        <div style="margin: 15px 0; font-size: 14px; color: var(--blue);">
+            💎: <span id="gems-count">0</span> | 💣: <span id="bombs-count">0</span>
         </div>
-        <div style="flex:1; overflow-y:auto"><div id="game-board"></div></div>
-        <div class="controls">
-            <button class="btn-3d" style="background:#444; box-shadow:0 5px 0 #222; color:#fff" onclick="resetRow()">تراجع</button>
-            <button class="btn-3d" id="start-btn" onclick="startGame()">جولة جديدة</button>
-        </div>
+        <button class="btn-3d btn-blue" onclick="playClick(); renderGrid()">NEXT ROUND ⟳</button>
+        <button id="rescanBtn" class="btn-3d btn-gold" style="font-size: 14px;" onclick="playClick(); rescan()">RE-SCAN AREA</button>
     </div>
 
     <script>
-        const P1 = "102075";
-        // قائمة الـ IDs المعتمدة
-        const P2 = ["1658237633", "1685403065", "1685370793", "1685373237"];
-        let atts = 3;
-        let curRow = 0;
-        let map = [];
+        // رابط جلب الـ IDs تلقائياً من الملف النصي على الـ GitHub الخاص بك
+        const githubFileUrl = "https://raw.githubusercontent.com/HHack-Vip/my-brick-game/main/ids.txt"; 
+        
+        let allowedIDs = [];
+        const music = document.getElementById('bg-music');
+        const clickSnd = document.getElementById('click-sound');
+        let tries = localStorage.getItem('monthlyTries') ? parseInt(localStorage.getItem('monthlyTries')) : 10;
+        let lastBombs = [];
 
-        function fixNum(s) {
-            return s.replace(/[٠-٩]/g, d => "٠١٢٣٤٥٦٧٨٩".indexOf(d)).trim();
-        }
-
-        function checkPass() {
-            let v = fixNum(document.getElementById('pass-input').value);
-            if (v === P1) {
-                document.getElementById('pass-screen').style.display = 'none';
-                document.getElementById('id-screen').style.display = 'flex';
-            } else { alert("خطأ في الباسورد!"); }
-        }
-
-        function checkID() {
-            let v = fixNum(document.getElementById('id-input').value);
-            if (P2.includes(v)) {
-                document.getElementById('id-screen').style.display = 'none';
-                document.getElementById('loading-screen').style.display = 'flex';
-                setTimeout(() => { document.getElementById('load-status').innerText = "جاري التحقق من الصلاحية..."; }, 1500);
-                setTimeout(() => {
-                    document.getElementById('loading-screen').style.display = 'none';
-                    document.getElementById('main-game').style.display = 'flex';
-                    loadAtts();
-                }, 4000);
-            } else { alert("ID غير صحيح!"); }
-        }
-
-        function loadAtts() {
-            let s = JSON.parse(localStorage.getItem('app_v5')) || {a:3, t:Date.now()};
-            if (Date.now() - s.t > 604800000) s = {a:3, t:Date.now()};
-            atts = s.a;
-            document.getElementById('att-count').innerText = atts;
-            if (atts <= 0) { document.getElementById('start-btn').disabled = true; document.getElementById('start-btn').style.opacity = 0.5; }
-        }
-
-        function startGame() {
-            if (atts <= 0) return;
-            atts--;
-            localStorage.setItem('app_v5', JSON.stringify({a:atts, t: Date.now()}));
-            document.getElementById('att-count').innerText = atts;
-            
-            const board = document.getElementById('game-board');
-            board.innerHTML = ''; curRow = 0; map = [];
-            
-            for (let i = 0; i < 10; i++) {
-                const rDiv = document.createElement('div');
-                rDiv.className = 'row' + (i===0?' active':'');
-                rDiv.id = 'r'+i;
-                let bCount = i<4?1:i<7?2:3;
-                let bombs = [0,1,2,3,4].sort(()=>Math.random()-0.5).slice(0,bCount);
-                map.push(bombs);
+        // دالة جلب البيانات من السيرفر فور فتح الصفحة
+        async function fetchAllowedIDs() {
+            try {
+                const response = await fetch(githubFileUrl);
+                if (!response.ok) throw new Error("Network error");
+                const text = await response.text();
                 
-                for (let j = 0; j < 5; j++) {
-                    const b = document.createElement('div');
-                    b.className = 'brick';
-                    b.onclick = () => {
-                        if (i !== curRow) return;
-                        if (bombs.includes(j)) { b.classList.add('wrong'); b.innerHTML='💣'; }
-                        else {
-                            b.classList.add('correct'); b.innerHTML='🍎';
-                            setTimeout(() => {
-                                if (curRow < 9) {
-                                    document.getElementById('r'+curRow).classList.remove('active');
-                                    curRow++;
-                                    document.getElementById('r'+curRow).classList.add('active');
-                                } else { alert("تم الفوز!"); }
-                            }, 200);
-                        }
-                    };
-                    rDiv.appendChild(b);
-                }
-                board.appendChild(rDiv);
+                // تحويل النص إلى مصفوفة أرقام
+                allowedIDs = text.split('\n')
+                                 .map(id => id.trim())
+                                 .filter(id => id.length > 0);
+                                 
+                console.log("تم تحميل الـ IDs النشطة:", allowedIDs);
+            } catch (error) {
+                console.error("فشل جلب الـ IDs:", error);
+                // قائمة احتياطية لو حصل أي مشكلة في النت
+                allowedIDs = ["13551996", "20040050", "1685403065"]; 
             }
         }
 
-        function resetRow() {
-            document.querySelectorAll('#r'+curRow+' .brick').forEach(b => { b.classList.remove('wrong','correct'); b.innerHTML=''; });
+        window.onload = async () => {
+            await fetchAllowedIDs();
+        };
+
+        function playClick() { clickSnd.play(); }
+        function toggleMusic() {
+            if (music.paused) { music.play(); document.getElementById('music-ctrl').innerText = "🔊"; }
+            else { music.pause(); document.getElementById('music-ctrl').innerText = "🔈"; }
+        }
+
+        function login() {
+            playClick();
+            if(document.getElementById('mainKey').value.trim() === "15711") {
+                music.play();
+                hideAll(); document.getElementById('screen-choice').classList.remove('hidden');
+            } else alert("WRONG KEY!");
+        }
+
+        function hideAll() { document.querySelectorAll('.container').forEach(c => c.classList.add('hidden')); }
+        function showID() { hideAll(); document.getElementById('screen-id').classList.remove('hidden'); }
+        
+        function vipAccess() {
+            let p = prompt("VIP KEY:");
+            if(p === "102545") {
+                hideAll(); document.getElementById('screen-game').classList.remove('hidden');
+                document.getElementById('game-title').innerText = "VIP RADAR";
+                renderGrid();
+            } else alert("DENIED!");
+        }
+
+        function checkID() {
+            const typedID = document.getElementById('pID').value.trim();
+            if(allowedIDs.includes(typedID)) {
+                
+                hideAll(); 
+                const loadingScreen = document.getElementById('screen-loading');
+                const loadText = document.getElementById('load-text');
+                loadingScreen.classList.remove('hidden');
+                
+                setTimeout(() => { 
+                    loadText.innerText = "جاري فحص بروتوكول الحماية..."; 
+                    loadText.style.color = "var(--blue)";
+                }, 1500);
+                
+                setTimeout(() => { 
+                    loadText.innerText = "تم تأمين الاتصال.. جاري الدخول"; 
+                    loadText.style.color = "var(--win-green)";
+                }, 3000);
+
+                setTimeout(() => {
+                    loadingScreen.classList.add('hidden');
+                    document.getElementById('screen-game').classList.remove('hidden');
+                    renderGrid();
+                }, 4500);
+
+            } else alert("ID NOT REGISTERED!");
+        }
+
+        function generateSmartBombs() {
+            let bombs = [];
+            if (lastBombs.length > 0 && Math.random() < 0.5) {
+                bombs.push(lastBombs[Math.floor(Math.random() * lastBombs.length)]);
+            }
+            
+            while(bombs.length < 2) {
+                let r = Math.floor(Math.random() * 25);
+                if(!bombs.includes(r)) bombs.push(r);
+            }
+            lastBombs = bombs;
+            return bombs;
+        }
+
+        function renderGrid() {
+            const grid = document.getElementById('gameGrid');
+            grid.innerHTML = "";
+            document.getElementById('gems-count').innerText = "0";
+            document.getElementById('bombs-count').innerText = "0";
+            
+            const currentBombs = generateSmartBombs();
+
+            for(let i=0; i<25; i++) {
+                let cell = document.createElement('div');
+                cell.className = 'cell';
+                cell.onclick = () => {
+                    playClick();
+                    if(cell.innerHTML !== "") return;
+                    if(currentBombs.includes(i)) {
+                        cell.innerHTML = "💣"; 
+                        cell.style.background = "rgba(255,0,0,0.3)";
+                        cell.style.borderColor = "#f00";
+                        document.getElementById('bombs-count').innerText = 
+                            parseInt(document.getElementById('bombs-count').innerText) + 1;
+                    } else {
+                        cell.innerHTML = "💎"; 
+                        cell.style.background = "rgba(0,212,255,0.2)";
+                        let g = document.getElementById('gems-count');
+                        g.innerText = parseInt(g.innerText) + 1;
+                    }
+                };
+                grid.appendChild(cell);
+            }
+        }
+
+        function rescan() {
+            if(tries > 0) {
+                tries--;
+                localStorage.setItem('monthlyTries', tries);
+                renderGrid();
+                alert("AI Rescan Complete. Tries left: " + tries);
+            } else alert("Monthly Scan Limit Reached!");
         }
     </script>
 </body>
