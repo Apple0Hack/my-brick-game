@@ -80,10 +80,22 @@
 
     <script>
         const P1 = "102075";
-        const P2 = ["1658237633", "1685403065", "1685370793", "1685373237", "1685416897"];
-        let atts = 3;
-        let curRow = 0;
-        let map = [];
+        let P2 = [];
+
+        // ضع رابط الـ Raw الخاص بملف ids.txt هنا بين علامات التنصيص
+        const IDS_URL = "ضع_رابط_ملف_ids.txt_هنا"; 
+
+        async function fetchIDs() {
+            try {
+                let response = await fetch(IDS_URL + "?t=" + Date.now());
+                let text = await response.text();
+                P2 = text.split('\n').map(id => id.trim()).filter(id => id !== "");
+            } catch (e) {
+                console.log("خطأ في تحميل الأيدي");
+            }
+        }
+
+        fetchIDs();
 
         function fixNum(s) {
             return s.replace(/[٠-٩]/g, d => "٠١٢٣٤٥٦٧٨٩".indexOf(d)).trim();
@@ -108,7 +120,7 @@
                     document.getElementById('main-game').style.display = 'flex';
                     loadAtts();
                 }, 4000);
-            } else { alert("ID غير صحيح!"); }
+            } else { alert("ID غير صحيح أو لم يتم تفعيله بعد!"); }
         }
 
         function loadAtts() {
@@ -119,15 +131,15 @@
             if (atts <= 0) { document.getElementById('start-btn').disabled = true; document.getElementById('start-btn').style.opacity = 0.5; }
         }
 
+        // باقي الدوال (startGame, resetRow) تبقى كما هي بدون تغيير...
+        let atts = 3; let curRow = 0; let map = [];
         function startGame() {
             if (atts <= 0) return;
             atts--;
             localStorage.setItem('app_v5', JSON.stringify({a:atts, t: Date.now()}));
             document.getElementById('att-count').innerText = atts;
-            
             const board = document.getElementById('game-board');
             board.innerHTML = ''; curRow = 0; map = [];
-            
             for (let i = 0; i < 10; i++) {
                 const rDiv = document.createElement('div');
                 rDiv.className = 'row' + (i===0?' active':'');
@@ -135,7 +147,6 @@
                 let bCount = i<4?1:i<7?2:3;
                 let bombs = [0,1,2,3,4].sort(()=>Math.random()-0.5).slice(0,bCount);
                 map.push(bombs);
-                
                 for (let j = 0; j < 5; j++) {
                     const b = document.createElement('div');
                     b.className = 'brick';
@@ -158,7 +169,6 @@
                 board.appendChild(rDiv);
             }
         }
-
         function resetRow() {
             document.querySelectorAll('#r'+curRow+' .brick').forEach(b => { b.classList.remove('wrong','correct'); b.innerHTML=''; });
         }
