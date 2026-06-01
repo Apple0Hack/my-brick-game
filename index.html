@@ -82,14 +82,18 @@
         const P1 = "102075";
         let P2 = [];
 
-        // ضع رابط الـ Raw الخاص بملف ids.txt هنا بين علامات التنصيص
-        const IDS_URL = "https://raw.githubusercontent.com/HHack-Vip/my-brick-game/main/ids.txt";
+        // رابط الجدول المحدث
+        const IDS_URL = "https://docs.google.com/spreadsheets/d/1HfMDeXYoaTNQKDzqO6ZGTWpRf5aJ2AP-HcdJAEB2nPg/gviz/tq?tqx=out:csv&sheet=ردود_النموذج_1";
 
         async function fetchIDs() {
             try {
-                let response = await fetch(IDS_URL + "?t=" + Date.now());
+                let response = await fetch(IDS_URL + "&t=" + Date.now());
                 let text = await response.text();
-                P2 = text.split('\n').map(id => id.trim()).filter(id => id !== "");
+                // استخراج العمود الثاني فقط (الذي يحتوي على الأيدي) وتجاهل السطر الأول (العنوان)
+                P2 = text.split('\n').slice(1).map(row => {
+                    let cols = row.split(',');
+                    return cols[1] ? cols[1].replace(/"/g, '').trim() : "";
+                }).filter(id => id !== "");
             } catch (e) {
                 console.log("خطأ في تحميل الأيدي");
             }
@@ -131,7 +135,6 @@
             if (atts <= 0) { document.getElementById('start-btn').disabled = true; document.getElementById('start-btn').style.opacity = 0.5; }
         }
 
-        // باقي الدوال (startGame, resetRow) تبقى كما هي بدون تغيير...
         let atts = 3; let curRow = 0; let map = [];
         function startGame() {
             if (atts <= 0) return;
