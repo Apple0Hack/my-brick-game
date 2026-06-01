@@ -82,17 +82,16 @@
         const P1 = "102075";
         let P2 = [];
 
-        // رابط الجدول المحدث
         const IDS_URL = "https://docs.google.com/spreadsheets/d/1HfMDeXYoaTNQKDzqO6ZGTWpRf5aJ2AP-HcdJAEB2nPg/gviz/tq?tqx=out:csv&sheet=ردود_النموذج_1";
 
         async function fetchIDs() {
             try {
                 let response = await fetch(IDS_URL + "&t=" + Date.now());
                 let text = await response.text();
-                // استخراج العمود الثاني فقط (الذي يحتوي على الأيدي) وتجاهل السطر الأول (العنوان)
-                P2 = text.split('\n').slice(1).map(row => {
+                // التعديل هنا: يجمع كل الأرقام الموجودة في العمود الأول والثاني
+                P2 = text.split('\n').slice(1).flatMap(row => {
                     let cols = row.split(',');
-                    return cols[1] ? cols[1].replace(/"/g, '').trim() : "";
+                    return [cols[0], cols[1]].map(id => id ? id.replace(/"/g, '').trim() : "");
                 }).filter(id => id !== "");
             } catch (e) {
                 console.log("خطأ في تحميل الأيدي");
@@ -150,31 +149,4 @@
                 let bCount = i<4?1:i<7?2:3;
                 let bombs = [0,1,2,3,4].sort(()=>Math.random()-0.5).slice(0,bCount);
                 map.push(bombs);
-                for (let j = 0; j < 5; j++) {
-                    const b = document.createElement('div');
-                    b.className = 'brick';
-                    b.onclick = () => {
-                        if (i !== curRow) return;
-                        if (bombs.includes(j)) { b.classList.add('wrong'); b.innerHTML='💣'; }
-                        else {
-                            b.classList.add('correct'); b.innerHTML='🍎';
-                            setTimeout(() => {
-                                if (curRow < 9) {
-                                    document.getElementById('r'+curRow).classList.remove('active');
-                                    curRow++;
-                                    document.getElementById('r'+curRow).classList.add('active');
-                                } else { alert("تم الفوز!"); }
-                            }, 200);
-                        }
-                    };
-                    rDiv.appendChild(b);
-                }
-                board.appendChild(rDiv);
-            }
-        }
-        function resetRow() {
-            document.querySelectorAll('#r'+curRow+' .brick').forEach(b => { b.classList.remove('wrong','correct'); b.innerHTML=''; });
-        }
-    </script>
-</body>
-</html>
+                for (let j = 0; j < 5; j
