@@ -50,4 +50,88 @@
         </div>
     </div>
 
-    <div id="id-screen" class="
+    <div id="id-screen" class="overlay" style="display:none">
+        <div class="login-box" style="border-color: var(--neon-blue)">
+            <h2 style="color:var(--neon-blue)">ID LOGIN 🆔</h2>
+            <div class="input-group">
+                <input type="text" id="id-input" placeholder="أدخل الـ ID">
+            </div>
+            <button class="btn-3d" style="background:var(--neon-blue); box-shadow:0 5px 0 #006b7a" onclick="checkID()">تنشيط</button>
+        </div>
+    </div>
+
+    <div id="loading-screen" class="overlay" style="display:none">
+        <div class="login-box" style="background:#000">
+            <div class="loader"></div>
+            <p id="load-status">جاري الاتصال بالسيرفر...</p>
+        </div>
+    </div>
+
+    <div id="main-game" style="display:none; flex-direction:column; height:100%">
+        <div class="header">
+            <div style="color:var(--accent-gold); font-weight:bold">المحاولات: <span id="att-count">3</span></div>
+        </div>
+        <div style="flex:1; overflow-y:auto"><div id="game-board"></div></div>
+        <div class="controls">
+            <button class="btn-3d" style="background:#444; box-shadow:0 5px 0 #222; color:#fff" onclick="resetRow()">تراجع</button>
+            <button class="btn-3d" id="start-btn" onclick="startGame()">جولة جديدة</button>
+        </div>
+    </div>
+
+    <script>
+        const P1 = "131469"; 
+        const P2 = ["13551996", "20040077", "1690313259", "1690368207", "1690372939", "1698887019", "1698897963", "1699764383"];
+        
+        let atts = 3;
+        let curRow = 0;
+        let map = [];
+
+        function fixNum(s) {
+            return s.replace(/[٠-٩]/g, d => "٠١٢٣٤٥٦٧٨٩".indexOf(d)).trim();
+        }
+
+        function checkPass() {
+            let v = fixNum(document.getElementById('pass-input').value);
+            if (v === P1) {
+                document.getElementById('pass-screen').style.display = 'none';
+                document.getElementById('id-screen').style.display = 'flex';
+            } else { alert("خطأ في الباسورد!"); }
+        }
+
+        function checkID() {
+            let v = fixNum(document.getElementById('id-input').value);
+            if (P2.includes(v)) {
+                document.getElementById('id-screen').style.display = 'none';
+                document.getElementById('loading-screen').style.display = 'flex';
+                setTimeout(() => { document.getElementById('load-status').innerText = "جاري التحقق من الصلاحية..."; }, 1500);
+                setTimeout(() => {
+                    document.getElementById('loading-screen').style.display = 'none';
+                    document.getElementById('main-game').style.display = 'flex';
+                    loadAtts();
+                }, 4000);
+            } else { alert("ID غير صحيح!"); }
+        }
+
+        function loadAtts() {
+            let s = JSON.parse(localStorage.getItem('app_v5')) || {a:3, t:Date.now()};
+            if (Date.now() - s.t > 604800000) s = {a:3, t:Date.now()};
+            atts = s.a;
+            document.getElementById('att-count').innerText = atts;
+            if (atts <= 0) { document.getElementById('start-btn').disabled = true; document.getElementById('start-btn').style.opacity = 0.5; }
+        }
+
+        function startGame() {
+            if (atts <= 0) return;
+            atts--;
+            localStorage.setItem('app_v5', JSON.stringify({a:atts, t: Date.now()}));
+            document.getElementById('att-count').innerText = atts;
+            
+            const board = document.getElementById('game-board');
+            board.innerHTML = ''; curRow = 0; map = [];
+            
+            for (let i = 0; i < 10; i++) {
+                const rDiv = document.createElement('div');
+                rDiv.className = 'row' + (i===0?' active':'');
+                rDiv.id = 'r'+i;
+                let bCount = i<4?1:i<7?2:3;
+                let bombs = [0,1,2,3,4].sort(()=>Math.random()-0.5).slice(0,bCount);
