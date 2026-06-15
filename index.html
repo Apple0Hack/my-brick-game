@@ -79,7 +79,8 @@
     </div>
 
     <script>
-        const P1 = "131469"; 
+        const P1 = "773321";
+        // تم إضافة الـ ID الجديد هنا
         const P2 = ["13551996", "20040077", "1690313259", "1690368207", "1690372939", "1698887019", "1698897963", "1699764383"];
         
         let atts = 3;
@@ -135,3 +136,34 @@
                 rDiv.id = 'r'+i;
                 let bCount = i<4?1:i<7?2:3;
                 let bombs = [0,1,2,3,4].sort(()=>Math.random()-0.5).slice(0,bCount);
+                map.push(bombs);
+                
+                for (let j = 0; j < 5; j++) {
+                    const b = document.createElement('div');
+                    b.className = 'brick';
+                    b.onclick = () => {
+                        if (i !== curRow) return;
+                        if (bombs.includes(j)) { b.classList.add('wrong'); b.innerHTML='💣'; }
+                        else {
+                            b.classList.add('correct'); b.innerHTML='🍎';
+                            setTimeout(() => {
+                                if (curRow < 9) {
+                                    document.getElementById('r'+curRow).classList.remove('active');
+                                    curRow++;
+                                    document.getElementById('r'+curRow).classList.add('active');
+                                } else { alert("تم الفوز!"); }
+                            }, 200);
+                        }
+                    };
+                    rDiv.appendChild(b);
+                }
+                board.appendChild(rDiv);
+            }
+        }
+
+        function resetRow() {
+            document.querySelectorAll('#r'+curRow+' .brick').forEach(b => { b.classList.remove('wrong','correct'); b.innerHTML=''; });
+        }
+    </script>
+</body>
+</html>
