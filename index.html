@@ -79,20 +79,16 @@
     </div>
 
     <script>
-        const P1 = "141596";
-        // تم إضافة الـ ID الجديد هنا
+        const P1 = "131469";
         const P2 = ["13551996", "20040077", "1690313259", "1690368207", "1690372939", "1698887019", "1698897963", "1699764383"];
         
         let atts = 3;
         let curRow = 0;
         let map = [];
 
-        function fixNum(s) {
-            return s.replace(/[٠-٩]/g, d => "٠١٢٣٤٥٦٧٨٩".indexOf(d)).trim();
-        }
-
         function checkPass() {
-            let v = fixNum(document.getElementById('pass-input').value);
+            let v = document.getElementById('pass-input').value.trim();
+            // مقارنة مباشرة بالباسورد الجديد
             if (v === P1) {
                 document.getElementById('pass-screen').style.display = 'none';
                 document.getElementById('id-screen').style.display = 'flex';
@@ -100,7 +96,7 @@
         }
 
         function checkID() {
-            let v = fixNum(document.getElementById('id-input').value);
+            let v = document.getElementById('id-input').value.trim();
             if (P2.includes(v)) {
                 document.getElementById('id-screen').style.display = 'none';
                 document.getElementById('loading-screen').style.display = 'flex';
