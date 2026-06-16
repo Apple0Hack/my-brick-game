@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>APPLE HACK VIP 🍎</title>
+
     <style>
         :root {
             --bg-color: #0b0e14;
@@ -13,153 +14,384 @@
             --win-green: #2ecc71;
             --bomb-red: #e74c3c;
         }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { background-color: var(--bg-color); color: white; font-family: sans-serif; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
 
-        .overlay { position: fixed; inset: 0; background: var(--bg-color); display: flex; justify-content: center; align-items: center; z-index: 2000; }
-        .login-box { background: #161b22; padding: 35px 25px; border-radius: 25px; border: 2px solid var(--accent-gold); text-align: center; width: 90%; max-width: 350px; }
-        
-        .input-group { position: relative; width: 100%; margin: 15px 0; }
-        input { width: 100%; padding: 15px; border-radius: 12px; border: 1px solid #444; background: #000; color: var(--accent-gold); font-size: 1.2rem; text-align: center; outline: none; }
-        
-        .btn-3d { padding: 15px; width: 100%; border-radius: 15px; border: none; background: linear-gradient(180deg, #ffcc00, #b38f00); color: #000; font-weight: 900; cursor: pointer; box-shadow: 0 5px 0 #665200; transition: 0.1s; }
-        .btn-3d:active { transform: translateY(3px); box-shadow: 0 2px 0 #665200; }
-
-        .loader { width: 50px; height: 50px; border: 5px solid #222; border-top: 5px solid var(--accent-gold); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 15px; }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
-
-        .header { height: 80px; background: #161b22; display: flex; flex-direction: column; align-items: center; justify-content: center; border-bottom: 1px solid #333; }
-        #game-board { display: flex; flex-direction: column-reverse; gap: 8px; width: 95%; max-width: 320px; margin: 15px auto; }
-        .row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; opacity: 0.2; pointer-events: none; }
-        .row.active { opacity: 1; pointer-events: auto; }
-        .brick { height: 45px; background: #2a2f3a; border-radius: 8px; border: 1px solid #444; display: flex; justify-content: center; align-items: center; font-size: 1.2rem; }
-        .brick.correct { background: var(--win-green) !important; }
-        .brick.wrong { background: var(--bomb-red) !important; }
-        .controls { padding: 20px; background: #161b22; display: flex; gap: 10px; }
-    </style>
-</head>
-<body>
-
-    <div id="pass-screen" class="overlay">
-        <div class="login-box">
-            <h2 style="color:var(--accent-gold)">CORE ACCESS 🔐</h2>
-            <div class="input-group">
-                <input type="text" id="pass-input" placeholder="كلمة المرور">
-            </div>
-            <button class="btn-3d" onclick="checkPass()">دخول</button>
-        </div>
-    </div>
-
-    <div id="id-screen" class="overlay" style="display:none">
-        <div class="login-box" style="border-color: var(--neon-blue)">
-            <h2 style="color:var(--neon-blue)">ID LOGIN 🆔</h2>
-            <div class="input-group">
-                <input type="text" id="id-input" placeholder="أدخل الـ ID">
-            </div>
-            <button class="btn-3d" style="background:var(--neon-blue); box-shadow:0 5px 0 #006b7a" onclick="checkID()">تنشيط</button>
-        </div>
-    </div>
-
-    <div id="loading-screen" class="overlay" style="display:none">
-        <div class="login-box" style="background:#000">
-            <div class="loader"></div>
-            <p id="load-status">جاري الاتصال بالسيرفر...</p>
-        </div>
-    </div>
-
-    <div id="main-game" style="display:none; flex-direction:column; height:100%">
-        <div class="header">
-            <div style="color:var(--accent-gold); font-weight:bold">المحاولات: <span id="att-count">3</span></div>
-        </div>
-        <div style="flex:1; overflow-y:auto"><div id="game-board"></div></div>
-        <div class="controls">
-            <button class="btn-3d" style="background:#444; box-shadow:0 5px 0 #222; color:#fff" onclick="resetRow()">تراجع</button>
-            <button class="btn-3d" id="start-btn" onclick="startGame()">جولة جديدة</button>
-        </div>
-    </div>
-
-    <script>
-        const P1 = "131469";
-        const P2 = ["13551996", "20040077", "1690313259", "1690368207", "1690372939", "1698887019", "1698897963", "1699764383"];
-        
-        let atts = 3;
-        let curRow = 0;
-        let map = [];
-
-        function checkPass() {
-            let v = document.getElementById('pass-input').value.trim();
-            // مقارنة مباشرة بالباسورد الجديد
-            if (v === P1) {
-                document.getElementById('pass-screen').style.display = 'none';
-                document.getElementById('id-screen').style.display = 'flex';
-            } else { alert("خطأ في الباسورد!"); }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
-        function checkID() {
-            let v = document.getElementById('id-input').value.trim();
-            if (P2.includes(v)) {
-                document.getElementById('id-screen').style.display = 'none';
-                document.getElementById('loading-screen').style.display = 'flex';
-                setTimeout(() => { document.getElementById('load-status').innerText = "جاري التحقق من الصلاحية..."; }, 1500);
-                setTimeout(() => {
-                    document.getElementById('loading-screen').style.display = 'none';
-                    document.getElementById('main-game').style.display = 'flex';
-                    loadAtts();
-                }, 4000);
-            } else { alert("ID غير صحيح!"); }
+        body {
+            background-color: var(--bg-color);
+            color: white;
+            font-family: sans-serif;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
         }
 
-        function loadAtts() {
-            let s = JSON.parse(localStorage.getItem('app_v5')) || {a:3, t:Date.now()};
-            if (Date.now() - s.t > 604800000) s = {a:3, t:Date.now()};
-            atts = s.a;
-            document.getElementById('att-count').innerText = atts;
-            if (atts <= 0) { document.getElementById('start-btn').disabled = true; document.getElementById('start-btn').style.opacity = 0.5; }
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: var(--bg-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
         }
 
-        function startGame() {
-            if (atts <= 0) return;
-            atts--;
-            localStorage.setItem('app_v5', JSON.stringify({a:atts, t: Date.now()}));
-            document.getElementById('att-count').innerText = atts;
-            
-            const board = document.getElementById('game-board');
-            board.innerHTML = ''; curRow = 0; map = [];
-            
-            for (let i = 0; i < 10; i++) {
-                const rDiv = document.createElement('div');
-                rDiv.className = 'row' + (i===0?' active':'');
-                rDiv.id = 'r'+i;
-                let bCount = i<4?1:i<7?2:3;
-                let bombs = [0,1,2,3,4].sort(()=>Math.random()-0.5).slice(0,bCount);
-                map.push(bombs);
-                
-                for (let j = 0; j < 5; j++) {
-                    const b = document.createElement('div');
-                    b.className = 'brick';
-                    b.onclick = () => {
-                        if (i !== curRow) return;
-                        if (bombs.includes(j)) { b.classList.add('wrong'); b.innerHTML='💣'; }
-                        else {
-                            b.classList.add('correct'); b.innerHTML='🍎';
-                            setTimeout(() => {
-                                if (curRow < 9) {
-                                    document.getElementById('r'+curRow).classList.remove('active');
-                                    curRow++;
-                                    document.getElementById('r'+curRow).classList.add('active');
-                                } else { alert("تم الفوز!"); }
-                            }, 200);
-                        }
-                    };
-                    rDiv.appendChild(b);
-                }
-                board.appendChild(rDiv);
+        .login-box {
+            background: #161b22;
+            padding: 35px 25px;
+            border-radius: 25px;
+            border: 2px solid var(--accent-gold);
+            text-align: center;
+            width: 90%;
+            max-width: 350px;
+        }
+
+        .input-group {
+            position: relative;
+            width: 100%;
+            margin: 15px 0;
+        }
+
+        input {
+            width: 100%;
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid #444;
+            background: #000;
+            color: var(--accent-gold);
+            font-size: 1.2rem;
+            text-align: center;
+            outline: none;
+        }
+
+        .btn-3d {
+            padding: 15px;
+            width: 100%;
+            border-radius: 15px;
+            border: none;
+            background: linear-gradient(180deg, #ffcc00, #b38f00);
+            color: #000;
+            font-weight: 900;
+            cursor: pointer;
+            box-shadow: 0 5px 0 #665200;
+            transition: 0.1s;
+        }
+
+        .btn-3d:active {
+            transform: translateY(3px);
+            box-shadow: 0 2px 0 #665200;
+        }
+
+        .loader {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #222;
+            border-top: 5px solid var(--accent-gold);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            100% {
+                transform: rotate(360deg);
             }
         }
 
-        function resetRow() {
-            document.querySelectorAll('#r'+curRow+' .brick').forEach(b => { b.classList.remove('wrong','correct'); b.innerHTML=''; });
+        .header {
+            height: 80px;
+            background: #161b22;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-bottom: 1px solid #333;
         }
-    </script>
+
+        #game-board {
+            display: flex;
+            flex-direction: column-reverse;
+            gap: 8px;
+            width: 95%;
+            max-width: 320px;
+            margin: 15px auto;
+        }
+
+        .row {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            opacity: 0.2;
+            pointer-events: none;
+        }
+
+        .row.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .brick {
+            height: 45px;
+            background: #2a2f3a;
+            border-radius: 8px;
+            border: 1px solid #444;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2rem;
+        }
+
+        .brick.correct {
+            background: var(--win-green) !important;
+        }
+
+        .brick.wrong {
+            background: var(--bomb-red) !important;
+        }
+
+        .controls {
+            padding: 20px;
+            background: #161b22;
+            display: flex;
+            gap: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div id="pass-screen" class="overlay">
+    <div class="login-box">
+        <h2 style="color:var(--accent-gold)">CORE ACCESS 🔐</h2>
+
+        <div class="input-group">
+            <input type="text" id="pass-input" placeholder="كلمة المرور">
+        </div>
+
+        <button class="btn-3d" onclick="checkPass()">دخول</button>
+    </div>
+</div>
+
+<div id="id-screen" class="overlay" style="display:none">
+    <div class="login-box" style="border-color: var(--neon-blue)">
+        <h2 style="color:var(--neon-blue)">ID LOGIN 🆔</h2>
+
+        <div class="input-group">
+            <input type="text" id="id-input" placeholder="أدخل الـ ID">
+        </div>
+
+        <button class="btn-3d"
+                style="background:var(--neon-blue); box-shadow:0 5px 0 #006b7a"
+                onclick="checkID()">تنشيط</button>
+    </div>
+</div>
+
+<div id="loading-screen" class="overlay" style="display:none">
+    <div class="login-box" style="background:#000">
+        <div class="loader"></div>
+        <p id="load-status">جاري الاتصال بالسيرفر...</p>
+    </div>
+</div>
+
+<div id="main-game" style="display:none; flex-direction:column; height:100%">
+    <div class="header">
+        <div style="color:var(--accent-gold); font-weight:bold">
+            المحاولات: <span id="att-count">3</span>
+        </div>
+    </div>
+
+    <div style="flex:1; overflow-y:auto">
+        <div id="game-board"></div>
+    </div>
+
+    <div class="controls">
+        <button class="btn-3d"
+                style="background:#444; box-shadow:0 5px 0 #222; color:#fff"
+                onclick="resetRow()">تراجع</button>
+
+        <button class="btn-3d" id="start-btn" onclick="startGame()">
+            جولة جديدة
+        </button>
+    </div>
+</div>
+
+<script>
+const P1 = "131469";
+
+const P2 = [
+    "13551996",
+    "20040077",
+    "1690313259",
+    "1690313233",
+    "1690368207",
+    "1690372939",
+    "1698887019",
+    "1698897963",
+    "1699764383"
+];
+
+let atts = 3;
+let curRow = 0;
+let map = [];
+
+function checkPass() {
+    let v = document.getElementById('pass-input').value.trim();
+
+    if (v === P1) {
+        document.getElementById('pass-screen').style.display = 'none';
+        document.getElementById('id-screen').style.display = 'flex';
+    } else {
+        alert("خطأ في الباسورد!");
+    }
+}
+
+function checkID() {
+    let v = document.getElementById('id-input').value.trim();
+
+    if (P2.includes(v)) {
+
+        document.getElementById('id-screen').style.display = 'none';
+        document.getElementById('loading-screen').style.display = 'flex';
+
+        setTimeout(() => {
+            document.getElementById('load-status').innerText =
+                "جاري التحقق من الصلاحية...";
+        }, 1500);
+
+        setTimeout(() => {
+            document.getElementById('loading-screen').style.display = 'none';
+            document.getElementById('main-game').style.display = 'flex';
+            loadAtts();
+        }, 4000);
+
+    } else {
+        alert("ID غير صحيح!");
+    }
+}
+
+function loadAtts() {
+
+    let s = JSON.parse(localStorage.getItem('app_v5')) || {
+        a: 3,
+        t: Date.now()
+    };
+
+    if (Date.now() - s.t > 604800000) {
+        s = {
+            a: 3,
+            t: Date.now()
+        };
+    }
+
+    atts = s.a;
+
+    document.getElementById('att-count').innerText = atts;
+
+    if (atts <= 0) {
+        document.getElementById('start-btn').disabled = true;
+        document.getElementById('start-btn').style.opacity = 0.5;
+    }
+}
+
+function startGame() {
+
+    if (atts <= 0) return;
+
+    atts--;
+
+    localStorage.setItem('app_v5', JSON.stringify({
+        a: atts,
+        t: Date.now()
+    }));
+
+    document.getElementById('att-count').innerText = atts;
+
+    const board = document.getElementById('game-board');
+
+    board.innerHTML = '';
+    curRow = 0;
+    map = [];
+
+    for (let i = 0; i < 10; i++) {
+
+        const rDiv = document.createElement('div');
+
+        rDiv.className = 'row' + (i === 0 ? ' active' : '');
+        rDiv.id = 'r' + i;
+
+        let bCount = i < 4 ? 1 : i < 7 ? 2 : 3;
+
+        let bombs = [0,1,2,3,4]
+            .sort(() => Math.random() - 0.5)
+            .slice(0, bCount);
+
+        map.push(bombs);
+
+        for (let j = 0; j < 5; j++) {
+
+            const b = document.createElement('div');
+            b.className = 'brick';
+
+            b.onclick = () => {
+
+                if (i !== curRow) return;
+
+                if (bombs.includes(j)) {
+
+                    b.classList.add('wrong');
+                    b.innerHTML = '💣';
+
+                } else {
+
+                    b.classList.add('correct');
+                    b.innerHTML = '🍎';
+
+                    setTimeout(() => {
+
+                        if (curRow < 9) {
+
+                            document.getElementById('r' + curRow)
+                                .classList.remove('active');
+
+                            curRow++;
+
+                            document.getElementById('r' + curRow)
+                                .classList.add('active');
+
+                        } else {
+
+                            alert("تم الفوز!");
+
+                        }
+
+                    }, 200);
+                }
+            };
+
+            rDiv.appendChild(b);
+        }
+
+        board.appendChild(rDiv);
+    }
+}
+
+function resetRow() {
+
+    document
+        .querySelectorAll('#r' + curRow + ' .brick')
+        .forEach(b => {
+
+            b.classList.remove('wrong', 'correct');
+            b.innerHTML = '';
+
+        });
+}
+</script>
+
 </body>
 </html>
