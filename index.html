@@ -18,7 +18,7 @@
         .login-box { background: #161b22; padding: 35px 25px; border-radius: 25px; border: 2px solid var(--accent-gold); text-align: center; width: 90%; max-width: 350px; }
         .input-group { position: relative; width: 100%; margin: 15px 0; }
         input { width: 100%; padding: 15px; border-radius: 12px; border: 1px solid #444; background: #000; color: var(--accent-gold); font-size: 1.2rem; text-align: center; outline: none; }
-        .btn-3d { padding: 15px; width: 100%; border-radius: 15px; border: none; background: linear-gradient(180deg, #ffcc00, #b38f00); color: #000; font-weight: 900; cursor: pointer; box-shadow: 0 5px 0 #665200; transition: 0.1s; }
+        .btn-3d { padding: 15px; width: 100%; border-radius: 15px; border: none; background: linear-gradient(180deg, #ffcc00, #b38f00); color: #000; font-weight: 900; cursor: pointer; box-shadow: 0 5px 0 #665200; transition: 0.1s; margin-bottom: 5px; }
         .btn-3d:active { transform: translateY(3px); box-shadow: 0 2px 0 #665200; }
         .loader { width: 50px; height: 50px; border: 5px solid #222; border-top: 5px solid var(--accent-gold); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 15px; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
@@ -29,7 +29,7 @@
         .brick { height: 45px; background: #2a2f3a; border-radius: 8px; border: 1px solid #444; display: flex; justify-content: center; align-items: center; font-size: 1.2rem; cursor: pointer; }
         .brick.correct { background: var(--win-green) !important; }
         .brick.wrong { background: var(--bomb-red) !important; }
-        .controls { padding: 20px; background: #161b22; display: flex; gap: 10px; }
+        .controls { padding: 20px; background: #161b22; display: flex; flex-direction: column; gap: 5px; }
     </style>
 </head>
 <body>
@@ -59,11 +59,14 @@
 
 <div id="main-game" style="display:none; flex-direction:column; height:100%">
     <div class="header">
-        <div style="color:var(--accent-gold); font-weight:bold">المحاولات: <span id="att-count">6</span></div>
+        <div style="color:var(--accent-gold); font-weight:bold">المحاولات المتبقية: <span id="att-count">7</span></div>
     </div>
     <div style="flex:1; overflow-y:auto"><div id="game-board"></div></div>
     <div class="controls">
-        <button class="btn-3d" style="background:#444; box-shadow:0 5px 0 #222; color:#fff" onclick="resetRow()">تراجع</button>
+        <div style="display:flex; gap:10px;">
+            <button class="btn-3d" style="background:#444; box-shadow:0 5px 0 #222; color:#fff; flex:1" onclick="resetRow()">تراجع</button>
+            <button class="btn-3d" style="background:#e74c3c; box-shadow:0 5px 0 #a32d20; color:#fff; flex:1" onclick="localStorage.removeItem('app_v6'); location.reload();">تصفير</button>
+        </div>
         <button class="btn-3d" id="start-btn" onclick="startGame()">جولة جديدة</button>
     </div>
 </div>
@@ -72,7 +75,7 @@
     const P1 = "131469";
     const P2 = ["120240", "1501217291", "20040077", "1690313259", "1690313233", "1690368207", "1690372939", "1698887019", "1698897963", "1699764383"];
 
-    let atts = 6;
+    let atts = 7;
     let curRow = 0;
     let map = [];
 
@@ -98,8 +101,8 @@
     }
 
     function loadAtts() {
-        let s = JSON.parse(localStorage.getItem('app_v6')) || { a: 6, t: Date.now() };
-        if (Date.now() - s.t > 604800000) { s = { a: 6, t: Date.now() }; }
+        let s = JSON.parse(localStorage.getItem('app_v6')) || { a: 7, t: Date.now() };
+        if (Date.now() - s.t > 604800000) { s = { a: 7, t: Date.now() }; }
         atts = s.a;
         document.getElementById('att-count').innerText = atts;
         if (atts <= 0) { document.getElementById('start-btn').disabled = true; document.getElementById('start-btn').style.opacity = 0.5; }
