@@ -44,7 +44,7 @@
 
 <script>
     const P1 = "807055";
-    const P2 = ["1726589495", "1724497207", "1307926957", "1706821579", "120240", "1501217291", "20040077", "1690313259", "1690313233", "1690368207", "1690372939", "1698887019", "1698897963", "1699764383", "1726020325", "4438578367"];
+    const P2 = ["1726589495", "1724497207", "1307926957", "1706821579", "120240", "1501217291", "20040077", "1690313259", "1690313233", "1690368207", "1690372939", "1698887019", "1698897963", "1699764383", "1726020325", "4438578367", "1740298815"];
     let curRow = 0;
 
     function checkPass() { if (document.getElementById('pass-input').value.trim() === P1) { document.getElementById('pass-screen').style.display = 'none'; document.getElementById('id-screen').style.display = 'flex'; } else { alert("كلمة المرور غير صحيحة!"); } }
@@ -52,61 +52,4 @@
     function checkID() { 
         if (P2.includes(document.getElementById('id-input').value.trim())) { 
             document.getElementById('id-screen').style.display = 'none'; 
-            document.getElementById('main-game').style.display = 'flex'; 
-            resetAtts(); 
-        } else { 
-            alert("هذا الـ ID غير مسجل!"); 
-        } 
-    }
-
-    function resetAtts() {
-        localStorage.setItem('app_v6', 3);
-        document.getElementById('att-count').innerText = 3;
-    }
-
-    function startGame() {
-        let atts = parseInt(localStorage.getItem('app_v6')) || 3;
-        if (atts <= 0) { alert("انتهت المحاولات! جاري التجديد..."); resetAtts(); return; }
-        
-        localStorage.setItem('app_v6', atts - 1);
-        document.getElementById('att-count').innerText = atts - 1;
-        
-        const board = document.getElementById('game-board');
-        board.innerHTML = '';
-        curRow = 0;
-        
-        for (let i = 0; i < 10; i++) {
-            const rDiv = document.createElement('div');
-            rDiv.className = 'row' + (i === 0 ? ' active' : '');
-            rDiv.id = 'r' + i;
-            let bombs = [0,1,2,3,4].sort(() => Math.random() - 0.5).slice(0, i < 4 ? 1 : 2);
-            for (let j = 0; j < 5; j++) {
-                const b = document.createElement('div');
-                b.className = 'brick';
-                b.onclick = () => { 
-                    if (i !== curRow) return;
-                    if (bombs.includes(j)) {
-                        b.style.background = '#e74c3c'; 
-                        b.innerText = '💣'; 
-                    } else {
-                        b.style.background = '#2ecc71'; 
-                        b.innerText = '🍎';
-                        document.getElementById('r'+curRow).classList.remove('active');
-                        curRow++;
-                        if(document.getElementById('r'+curRow)) document.getElementById('r'+curRow).classList.add('active');
-                    }
-                };
-                rDiv.appendChild(b);
-            }
-            board.appendChild(rDiv);
-        }
-    }
-    function resetRow() { 
-        document.querySelectorAll('#r' + curRow + ' .brick').forEach(b => { 
-            b.style.background = '#2a2f3a'; 
-            b.innerText = ''; 
-        }); 
-    }
-</script>
-</body>
-</html>
+            document.getElementById('main-
